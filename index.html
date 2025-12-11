@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>你的AI人格MBTI測驗</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      background: #f5f5f7;
+      margin: 0;
+      padding: 0;
+      color: #111827;
+    }
+    .container {
+      max-width: 800px;
+      margin: 24px auto 40px;
+      padding: 24px 20px 32px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.4rem;
+    }
+    .subtitle {
+      color: #6b7280;
+      margin-bottom: 1.0rem;
+    }
+
+    /* === 新增：免責說明 + 官網連結樣式 === */
+    .disclaimer {
+      font-size: 0.8rem;
+      color: #4b5563;
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 12px 14px;
+      border: 1px solid #e5e7eb;
+      line-height: 1.5;
+      margin-bottom: 0.75rem;
+    }
+    .disclaimer-title {
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+    .disclaimer ol {
+      margin: 0.2rem 0 0.1rem 1.2rem;
+      padding: 0;
+    }
+    .disclaimer li {
+      margin-bottom: 0.1rem;
+    }
+    .official-link {
+      font-size: 0.82rem;
+      color: #4b5563;
+      margin-bottom: 1.3rem;
+    }
+    .official-link a {
+      color: #2563eb;
+      text-decoration: underline;
+    }
+    .official-link a:hover {
+      text-decoration: none;
+    }
+    /* === 原有樣式繼續 === */
+
+    .question-index {
+      font-size: 0.9rem;
+      color: #6b7280;
+      margin-bottom: 0.2rem;
+    }
+    .question-text {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    .options {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.5rem;
+    }
+    .option-item {
+      margin-bottom: 0.75rem;
+    }
+    .option-label {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      background: #f9fafb;
+    }
+    .option-input {
+      display: none;
+    }
+    .option-label:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 1px rgba(59,130,246,0.4);
+      background: #eff6ff;
+    }
+    .option-input:checked + .option-label {
+      border-color: #2563eb;
+      background: #dbeafe;
+      box-shadow: 0 0 0 1px rgba(37,99,235,0.7);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 20px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+      box-shadow: 0 8px 18px rgba(37,99,235,0.35);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #374151;
+      margin-right: 8px;
+    }
+    .btn-secondary:hover {
+      background: #d1d5db;
+    }
+    .progress {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 1rem;
+    }
+    .progress-bar-wrap {
+      width: 100%;
+      height: 6px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg,#2563eb,#4f46e5);
+      transition: width 0.2s ease;
+    }
+    .result-title {
+      font-size: 1.4rem;
+      margin-bottom: 0.4rem;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-right: 6px;
+      margin-top: 4px;
+    }
+    .pill-app { background: #dbeafe; color: #1d4ed8; }
+    .pill-dev { background: #dcfce7; color: #15803d; }
+    .pill-res { background: #fee2e2; color: #b91c1c; }
+    .result-section {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    .result-section h3 {
+      font-size: 1.05rem;
+      margin-bottom: 0.3rem;
+    }
+    .result-section p {
+      margin: 0.1rem 0 0.4rem;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+    .result-list {
+      margin: 0.2rem 0 0.6rem 1.1rem;
+      color: #4b5563;
+    }
+        /* 結果頁小白插圖 */
+    .result-illustration {
+      margin-top: 0.8rem;
+      margin-bottom: 0.8rem;
+      text-align: center;
+    }
+    .result-illustration img {
+      max-width: 660px;   /* 想放大可以改 260 或 300 */
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.22);
+    }
+
+    .restart {
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+    @media (max-width: 640px) {
+      .container {
+        margin: 12px auto 24px;
+        border-radius: 12px;
+        padding: 18px 14px 24px;
+      }
+      h1 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AI人才的「人格測驗」小遊戲</h1>
+    <p class="subtitle">
+      這是一個結合趣味與職涯思考的小測驗，幫助你從
+      <strong>AI 應用 / 開發 / 研究</strong>三個方向，
+      認識自己的傾向與下一步可以怎麼學。
+    </p>
+
+    <!-- 🛡 免責說明（版本2）＋ 官網連結 -->
+    <div class="disclaimer">
+      <div class="disclaimer-title">【重要說明】</div>
+      <ol>
+        <li>本測驗為社群互動用途，旨在協助使用者以輕鬆方式理解《AI 產業人才認定指引》之精神。</li>
+        <li>測驗內容屬示意性質，並未作為任何專業認定、資格審查、職務調整、考核標準或正式能力判定工具。</li>
+        <li>測驗結果僅供個人自我了解與學習參考，不構成本部或本署之官方立場、政策意圖，亦不代表個人實際能力。</li>
+        <li>如需正式認定、培訓或人才評量資訊，請依本署公布之文件資訊為準。</li>
+      </ol>
+    </div>
+    <p class="official-link">
+      想進一步了解完整指引原文、培訓或認定相關資訊，請參考本署官網公告：
+      <a href="https://moda.gov.tw/ADI/services/publications/16938" target="_blank" rel="noopener noreferrer">
+        AI 產業人才認定指引專區
+      </a>
+    </p>
+    <!-- 封面入口區 -->
+    <div id="intro-area">
+      <p style="color:#4b5563; line-height:1.6; margin-bottom:1.2rem;">
+        這是一個結合 <strong>MBTI 氛圍＋AI 產業人才指引</strong> 的小測驗，
+        幫你從工作情境與學習動機，初步看看自己更偏向哪一種 AI 人才角色，
+        並得到下一步可以怎麼學習的建議。
+      </p>
+
+      <!-- 封面小白圖（可用你喜歡的封面） -->
+      <div style="text-align:center; margin-bottom:1.4rem;">
+        <img src="人格測驗小遊戲封面.png"
+             alt="小白封面插圖"
+             style="max-width:720px;width:100%;border-radius:16px;
+                    box-shadow:0 12px 28px rgba(15,23,42,0.2);" />
+      </div>
+
+      <p style="font-size:0.9rem;color:#6b7280;margin-bottom:1.2rem;">
+        測驗約 3～5 分鐘，共 12 題單選題。<br/>
+        結果僅供自我了解與學習規劃參考，實際能力仍需搭配經驗與專業培訓。
+      </p>
+
+      <button id="start-btn" class="btn btn-primary" type="button">
+        開始測驗 →
+      </button>
+    </div>
+
+    <!-- 原本的測驗區塊 -->
+
+    <div id="quiz-area" style="display:none;">
+      <!-- 進度 -->
+      <div class="progress">
+        題目進度：<span id="progress-text">第 1 題</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+
+      <!-- 題目 -->
+      <div id="question-block">
+        <div class="question-index"></div>
+        <div class="question-text"></div>
+        <ul class="options"></ul>
+      </div>
+
+      <!-- 按鈕 -->
+      <div>
+        <button id="prev-btn" class="btn btn-secondary" type="button">← 上一題</button>
+        <button id="next-btn" class="btn btn-primary" type="button">下一題 →</button>
+      </div>
+    </div>
+
+    <!-- 結果區塊 -->
+    <div id="result-area" style="display:none;">
+      <div class="result-title" id="result-title"></div>
+      <div id="result-tags"></div>
+       <!-- 這裡插入小白插圖 -->
+      <div class="result-illustration">
+        <!-- 把 xiaobai.png 換成你實際的圖片路徑或網址 -->
+
+        <img id="result-illustration-img" src="問卷測驗結果第二版＿應用型人才.png" alt="小白的插圖" />
+      </div>
+
+      <div class="result-section">
+        <h3>你的 AI 人才傾向</h3>
+        <p id="result-summary"></p>
+      </div>
+
+      <div class="result-section">
+        <h3>下一步可以怎麼做？</h3>
+        <ul id="result-actions" class="result-list"></ul>
+      </div>
+
+      <div class="result-section">
+        <h3>小提醒</h3>
+        <p id="result-note"></p>
+      </div>
+
+      <div class="restart">
+        <button id="restart-btn" class="btn btn-secondary" type="button">重新測驗</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---- 題庫設定：你可以在這裡增減、修改題目 ----
+    // profile: 'application' | 'developer' | 'research'
+    const questions = [
+      {
+        id: 1,
+        text: "當你獲得一個新任務，你會先做什麼？",
+        options: [
+          { text: "先想想有沒有 AI 工具能幫忙", profile: "application" },
+          { text: "把任務拆成幾個步驟", profile: "developer" },
+          { text: "想懂背後的邏輯跟資料來源", profile: "research" },
+        ],
+      },
+      {
+        id: 2,
+        text: "面對陌生的技術或概念，你的反應是：",
+        options: [
+          { text: "找能直接用的工具或範本", profile: "application" },
+          { text: "看教學流程，照步驟試做", profile: "developer" },
+          { text: "先了解原理或為什麼需要它", profile: "research" },
+        ],
+      },
+      {
+        id: 3,
+        text: "如果有人說：「AI 的答案怪怪的」，你最想知道什麼？",
+        options: [
+          { text: "用的是哪個工具？要不要換一個？", profile: "application" },
+          { text: "問題是不是太大、任務有沒有定義清楚？", profile: "developer" },
+          { text: "資料來源是不是有偏差或不完整？", profile: "research" },
+        ],
+      },
+      {
+        id: 4,
+        text: "哪一種挑戰讓你最有成就感？",
+        options: [
+          { text: "用 AI 讓工作快一倍", profile: "application" },
+          { text: "把一個麻煩流程變成自動運作", profile: "developer" },
+          { text: "搞懂 AI 為什麼會做出某個判斷", profile: "research" },
+        ],
+      },
+      {
+        id: 5,
+        text: "你目前想學 AI 的主要原因是：",
+        options: [
+          { text: "提升日常工作效率（文書、簡報、行政）", profile: "application" },
+          { text: "做出更完整的小工具或服務", profile: "developer" },
+          { text: "未來想往更技術、研究的方向發展", profile: "research" },
+        ],
+      },
+      {
+        id: 6,
+        text: "你理想中 AI 在你工作中的角色是：",
+        options: [
+          { text: "幫我加速、做初稿的好夥伴", profile: "application" },
+          { text: "讓流程更穩定、可重複的小幫手", profile: "developer" },
+          { text: "協助分析與判斷的顧問", profile: "research" },
+        ],
+      },
+      {
+        id: 7,
+        text: "你目前最熟悉 AI 的哪種使用方式？",
+        options: [
+          { text: "直接用生成工具（問答、寫文、畫圖）", profile: "application" },
+          { text: "用 AI 做整理資料、設計流程或表單", profile: "developer" },
+          { text: "觀察 AI 在不同資料情境下的判斷差異", profile: "research" },
+        ],
+      },
+      {
+        id: 8,
+        text: "如果未來一年你變得更懂 AI，你最希望被認為是",
+        options: [
+          { text: "善用 AI，把事情做得又快又穩的人", profile: "application" },
+          { text: "能把一件事整理得更清楚、更好執行的人", profile: "developer" },
+          { text: "能從 AI 回答中抓到重點並協助大家思考的人", profile: "research" },
+        ],
+      },
+      {
+        id: 9,
+        text: "如果你每天只能讓 AI 做一種任務，你希望是：",
+        options: [
+          { text: "幫忙加速文書或簡報內容製作", profile: "application" },
+          { text: "幫忙做工作方式的優化與整理", profile: "developer" },
+          { text: "幫忙做決策前的分析與比較", profile: "research" },
+        ],
+      },
+      {
+        id: 10,
+        text: "如果要學一項新的 AI 技能，你會：",
+        options: [
+          { text: "先找可以直接上手的工具，用成果倒推學習", profile: "application" },
+          { text: "找一步一步的教學，把整個過程走過一遍", profile: "developer" },
+          { text: "先看概念與原理，了解清楚再開始操作", profile: "research" },
+        ],
+      },
+      {
+        id: 11,
+        text: "同事要做一份很重要的簡報，你會怎麼用 AI 幫他？",
+        options: [
+          { text: "用 AI 生成大綱與內容，再一起修改", profile: "application" },
+          { text: "幫他整理重點與架構，做成之後也能沿用的版本", profile: "developer" },
+          { text: "協助檢查數據、來源與關鍵圖表是否合理", profile: "research" },
+        ],
+      },
+      {
+        id: 12,
+        text: "主管說：「我們能不能做一個跟 AI 有關的新服務？」你會：",
+        options: [
+          { text: "先去找市面上類似的 AI 工具或案例", profile: "application" },
+          { text: "先問清楚需求，整理成幾個可以執行的步驟", profile: "developer" },
+          { text: "思考這個服務需要什麼資料，結果會拿來做什麼判斷", profile: "research" },
+        ],
+      },
+    ];
+
+    // ---- 內部狀態 ----
+    const totalQuestions = questions.length;
+    let currentIndex = 0;
+    let answers = {}; // { questionId: selectedProfile }
+
+    const introArea = document.getElementById("intro-area");
+    const quizArea = document.getElementById("quiz-area");
+    const questionIndexEl = document.querySelector(".question-index");
+    const questionTextEl = document.querySelector(".question-text");
+    const optionsListEl = document.querySelector(".options");
+    const progressTextEl = document.getElementById("progress-text");
+    const progressBarEl = document.getElementById("progress-bar");
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const startBtn = document.getElementById("start-btn");
+
+
+    const resultArea = document.getElementById("result-area");
+    const resultTitleEl = document.getElementById("result-title");
+    const resultTagsEl = document.getElementById("result-tags");
+    const resultSummaryEl = document.getElementById("result-summary");
+    const resultActionsEl = document.getElementById("result-actions");
+    const resultNoteEl = document.getElementById("result-note");
+    const restartBtn = document.getElementById("restart-btn");
+
+    // 洗牌函式：用來打亂選項順序
+    function shuffleArray(arr) {
+      const array = arr.slice();
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function renderQuestion() {
+      const q = questions[currentIndex];
+      const qNumber = currentIndex + 1;
+
+      questionIndexEl.textContent = `第 ${qNumber} 題`;
+      questionTextEl.textContent = q.text;
+
+      // 更新進度
+      progressTextEl.textContent = `第 ${qNumber} 題，共 ${totalQuestions} 題`;
+      const percent = (qNumber / totalQuestions) * 100;
+      progressBarEl.style.width = percent + "%";
+
+      // 打亂選項順序，但保留 profile 標籤
+      const shuffledOptions = shuffleArray(q.options);
+
+      optionsListEl.innerHTML = "";
+      shuffledOptions.forEach((opt, idx) => {
+        const li = document.createElement("li");
+        li.className = "option-item";
+
+        const inputId = `q${q.id}_opt${idx}`;
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = `q${q.id}`;
+        input.id = inputId;
+        input.className = "option-input";
+        input.dataset.profile = opt.profile;
+
+        // 如果之前有作答，保持勾選狀態
+        if (answers[q.id] === opt.profile) {
+          input.checked = true;
+        }
+
+        const label = document.createElement("label");
+        label.className = "option-label";
+        label.htmlFor = inputId;
+        label.textContent = opt.text;
+
+        li.appendChild(input);
+        li.appendChild(label);
+        optionsListEl.appendChild(li);
+      });
+
+      // 第一題不能按上一題
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.textContent = currentIndex === totalQuestions - 1 ? "看結果 →" : "下一題 →";
+    }
+
+    function getCurrentSelection() {
+      const q = questions[currentIndex];
+      const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+      if (!selected) return null;
+      return selected.dataset.profile;
+    }
+
+    function showResult() {
+      // 統計分數
+      const score = { application: 0, developer: 0, research: 0 };
+      questions.forEach((q) => {
+        const p = answers[q.id];
+        if (p && score.hasOwnProperty(p)) score[p] += 1;
+      });
+
+      // 找最高分
+      let topProfile = "application";
+      if (score.developer >= score.application && score.developer >= score.research) {
+        topProfile = "developer";
+      }
+      if (score.research >= score.application && score.research >= score.developer) {
+        topProfile = "research";
+      }
+
+      let title = "";
+      let summary = "";
+      let actions = [];
+      let note = "";
+      let tagsHtml = "";
+
+      // 依照 topProfile 設定小白圖片
+        const illustrationImg = document.getElementById("result-illustration-img");
+
+        if (topProfile === "application") {
+        illustrationImg.src = "問卷結果第二版應用型人才.jpg";
+        } else if (topProfile === "developer") {
+        illustrationImg.src = "問卷結果第二版開發型人才.png";
+        } else if (topProfile === "research") {
+        illustrationImg.src = "問卷結果第二版研究型人才（橫）.png";
+        }
+
+
+      if (topProfile === "application") {
+        title = "你的AI人格是：AP型人格（應用型AI人才）";
+        tagsHtml = `
+          <span class="pill pill-app">善用工具</span>
+          <span class="pill pill-app">懂情境、懂需求</span>
+        `;
+        summary =
+          "你擅長把 AI 放進真實工作情境裡，是「會用、敢用」的那一型。你重視的是：這件事能不能更快、更順、更省力。這正是 AI 應用人才在產業裡最需要的特質。";
+
+        actions = [
+          "挑 1～2 個你工作常用的 AI 工具，學會「問對問題」與「拆任務」。",
+          "從一件小事開始：例如會議紀錄、文件整理、簡報初稿，建立自己的 AI 工作流程。",
+          "試著跟同事溝通：哪些步驟可以交給 AI，哪些仍需要人工判斷，變成團隊的小小推動者。",
+        ];
+
+        note =
+          "指引裡提到，應用型人才的關鍵在於：看得懂產業情境、定義得出問題、敢於嘗試新工具。你不一定要寫程式，也可以在團隊裡成為很重要的關鍵角色。";
+      } else if (topProfile === "developer") {
+        title = "你的AI人格是：DV型人格（開發型AI人才）";
+        tagsHtml = `
+          <span class="pill pill-dev">流程設計</span>
+          <span class="pill pill-dev">整合能力</span>
+        `;
+        summary =
+          "你習慣把事情拆成步驟、想辦法做成可重複運作的流程。你在乎的不只是「有沒有做完」，更在意「這套做法以後能不能一用再用」。這正是開發型 AI 人才的重要特徵。";
+
+        actions = [
+          "選一個你最熟悉的工作流程，畫出「輸入 → 處理 → 輸出」，思考哪一段可以由 AI 協助。",
+          "學會把多個工具串成一個小流程，例如：表單收集 → AI 整理 → 輸出成報表。",
+          "和同事或資訊單位討論：有哪些現有系統可以搭配 AI，變成更順暢的一條龍服務。",
+        ];
+
+        note =
+          "指引裡提到，開發型人才不一定都是工程師，更重要的是：能不能把需求轉成具體流程、懂得與不同角色協作。你可以從小規模實驗開始，慢慢建立自己的作品集。";
+      } else {
+        title = "你的AI人格是：RS型人格（研究型AI人才）";
+        tagsHtml = `
+          <span class="pill pill-res">好奇底層原理</span>
+          <span class="pill pill-res">重視資料與判斷</span>
+        `;
+        summary =
+          "你對 AI 的運作方式特別有興趣，常常想知道「為什麼會這樣」。你重視資料、判斷標準與可靠性，這讓你很適合扮演「幫大家把關」與「往深處挖」的角色。";
+
+        actions = [
+          "從你常用的 AI 工具開始，觀察：輸入不同資料時，結果有什麼系統性的差異。",
+          "閱讀一兩篇淺顯易懂的 AI 觀念文章，特別是和你業務相關的應用案例。",
+          "在團隊裡練習用簡單的語言，向同事解釋：AI 的結果可信到什麼程度、有哪些需要注意的地方。",
+        ];
+
+        note =
+          "指引裡提到，研究型人才的價值，在於把技術與判斷標準講清楚，讓決策更穩健。就算不走學術路線，你的思考方式，也能讓團隊在使用 AI 時更安心。";
+      }
+
+      resultTitleEl.textContent = title;
+      resultTagsEl.innerHTML = tagsHtml;
+      resultSummaryEl.textContent = summary;
+
+      resultActionsEl.innerHTML = "";
+      actions.forEach((a) => {
+        const li = document.createElement("li");
+        li.textContent = a;
+        resultActionsEl.appendChild(li);
+      });
+
+      resultNoteEl.textContent = note;
+
+      quizArea.style.display = "none";
+      resultArea.style.display = "block";
+    }
+
+    // ---- 事件綁定 ----
+    // 開始測驗：隱藏封面 → 顯示題目
+    startBtn.addEventListener("click", () => {
+    introArea.style.display = "none";
+    quizArea.style.display = "block";
+    currentIndex = 0;
+    answers = {};
+    renderQuestion();
+    });
+    nextBtn.addEventListener("click", () => {
+      const sel = getCurrentSelection();
+      if (!sel) {
+        alert("請先選擇一個選項再繼續喔！");
+        return;
+      }
+      const q = questions[currentIndex];
+      answers[q.id] = sel;
+
+      if (currentIndex < totalQuestions - 1) {
+        currentIndex += 1;
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    });
+
+    prevBtn.addEventListener("click", () => {
+      if (currentIndex > 0) {
+        currentIndex -= 1;
+        renderQuestion();
+      }
+    });
+
+    restartBtn.addEventListener("click", () => {
+      answers = {};
+      currentIndex = 0;
+      resultArea.style.display = "none";
+      quizArea.style.display = "block";
+      renderQuestion();
+    });
+
+    // 初始渲染
+   // renderQuestion();
+  </script>
+</body>
+</html>
